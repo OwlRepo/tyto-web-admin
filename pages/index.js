@@ -22,54 +22,62 @@ import validateLogin from "../constant/services/authentication/login";
 
 export default function Home() {
   const [isLoggingIn, setisLoggingIn] = useState(false);
-  const toast = useToast()
-  const [email,setEmail] = useState('')
-  const [password,setPassword] = useState('')
+  const toast = useToast();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const onLogin = async () => {
     setisLoggingIn(true);
-    const validationResult = await validateLogin({email:email,password:password})
-    
-    if(validationResult.success){
+    const validationResult = await validateLogin({
+      email: email,
+      password: password,
+    });
+
+    if (validationResult.success) {
       Router.push({ pathname: "/admin" }).then(() => {
-        localStorage.setItem('email',email),
-        setisLoggingIn(false);
+        localStorage.setItem("email", email), setisLoggingIn(false);
       });
-    }
-    else{
+    } else {
       toast({
-        title: 'Login Failed',
+        title: "Login Failed",
         description: validationResult.message,
-        status: 'error',
+        status: "error",
         duration: 5000,
         isClosable: true,
-      })
+      });
       setisLoggingIn(false);
     }
   };
 
-  
+  useEffect(() => {
+    const checkSession = localStorage.getItem("email");
+    if (checkSession) {
+      Router.push({ pathname: "/admin" });
+    }
+  }, []);
 
   return (
     <PageWrapper>
-    <NextSeo 
-      title="TYTO ADMIN | LOGIN"
-      description="TYTO Admin LOGIN"
-    />
+      <NextSeo title="TYTO ADMIN | LOGIN" description="TYTO Admin LOGIN" />
       <Fade initialScale={"0.9"} in={!isLoggingIn} unmountOnExit={true}>
         <Center>
           <VStack alignItems={"stretch"} minW={"30vw"} mt={"30vh"}>
             <Heading color={"title"}>TYTO ADMIN</Heading>
             <Text color="subtitle">Fill out the fields below to continue.</Text>
             <Box h="5" />
-            <Input shadow={"inner"} bg={"white"} placeholder={"Email"} onChange={event=>setEmail(event.target.value)} />
-            <HStack> 
+            <Input
+              shadow={"inner"}
+              bg={"white"}
+              placeholder={"Email"}
+              onChange={(event) => setEmail(event.target.value)}
+            />
+            <HStack>
               <Input
                 type="password"
                 shadow={"inner"}
                 bg={"white"}
                 placeholder={"Password"}
-                onChange={event=>setPassword(event.target.value)}
+                onChange={(event) => setPassword(event.target.value)}
               />
               <IconButton icon={<ViewOffIcon />} />
             </HStack>
@@ -90,11 +98,7 @@ export default function Home() {
         <Center>
           <VStack alignItems={"center"} minW={"5vw"} mt={"45vh"} spacing={"5"}>
             <Circles ariaLabel="loading-indicator" color="#548CA8" />
-            <Heading
-              color="title"
-            >
-              Loading
-            </Heading>
+            <Heading color="title">Loading</Heading>
           </VStack>
         </Center>
       </ScaleFade>

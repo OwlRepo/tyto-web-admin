@@ -103,7 +103,9 @@ export default function NavigationBar() {
           mt={"2rem"}
           bg={"title"}
           borderRadius={"md"}
-          onClick={() => Router.push({ pathname: "/" })}
+          onClick={() => {
+            localStorage.clear(), Router.push({ pathname: "/" });
+          }}
         >
           <HStack alignItems={"center"}>
             <Text fontWeight={"bold"} color={"white"}>

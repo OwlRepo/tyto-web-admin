@@ -60,41 +60,6 @@ export default function NavigationBar() {
           </AccordionItem>
         </Accordion>
 
-        <Accordion allowToggle>
-          <AccordionItem>
-            <h2>
-              <AccordionButton>
-                <Box flex="1" textAlign="left">
-                  Schedules
-                </Box>
-                <AccordionIcon />
-              </AccordionButton>
-            </h2>
-            <AccordionPanel>
-              <Box
-                cursor={"pointer"}
-                textAlign="left"
-                pl={"1.5rem"}
-                pb={"1rem"}
-                onClick={() =>
-                  Router.push({ pathname: "/admin/schedules/students" })
-                }
-              >
-                Students
-              </Box>
-              <Box
-                cursor={"pointer"}
-                textAlign="left"
-                pl={"1.5rem"}
-                onClick={() =>
-                  Router.push({ pathname: "/admin/schedules/teachers" })
-                }
-              >
-                Teachers
-              </Box>
-            </AccordionPanel>
-          </AccordionItem>
-        </Accordion>
         <Box
           cursor={"pointer"}
           textAlign="left"

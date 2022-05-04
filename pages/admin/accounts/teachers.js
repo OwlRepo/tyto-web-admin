@@ -41,13 +41,13 @@ export default function Teachers() {
           </BreadcrumbItem>
 
           <BreadcrumbItem>
-            <BreadcrumbLink href="/admin/accounts/professors">
+            <BreadcrumbLink href="/admin/accounts/teachers">
               accounts
             </BreadcrumbLink>
           </BreadcrumbItem>
 
           <BreadcrumbItem isCurrentPage>
-            <BreadcrumbLink href="/admin/accounts/professors">
+            <BreadcrumbLink href="/admin/accounts/teachers">
               teachers
             </BreadcrumbLink>
           </BreadcrumbItem>

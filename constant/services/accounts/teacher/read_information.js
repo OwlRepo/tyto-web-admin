@@ -1,30 +1,43 @@
-import { collection,doc,getDoc } from 'firebase/firestore'
-import firestore_db from '../../../configurations/firebase_init'
+import { collection, doc, getDoc, setDoc } from "firebase/firestore";
+import firestore_db from "../../../configurations/firebase_init";
 
-const emailExistResponse = ({data}) => ({
-  success:true,
-  message:'Search successful.',
-  data:[
+const emailExistResponse = ({ data }) => ({
+  success: true,
+  message: "Search successful.",
+  data: [
     {
       email: data.email,
       fullname: data.fullname,
-      schedule_id:data.schedule_id,
-      password:data.password
-    }
-  ]
-})
+      schedule_id: data.schedule_id,
+      password: data.password,
+    },
+  ],
+});
 
 const emailNotExistingResponse = () => ({
-  success:false,
-  message:'Email does not exist.'
-})
+  success: false,
+  message: "Email does not exist.",
+});
 
+export default async function searchAccountInformation({ email }) {
+  const docRef = doc(firestore_db, "accounts_teacher", email);
+  const docData = await getDoc(docRef);
+  const isEmailExisting = docData.exists();
+  var date = new Date();
 
-export default async function searchAccountInformation ({email}){
-  const docRef = doc(firestore_db,'accounts_teacher',email)
-  const docData = await getDoc(docRef)
-  const isEmailExisting = docData.exists()
-  
-  return isEmailExisting? emailExistResponse({data:docData.data()}):emailNotExistingResponse()
+  const logsRef = doc(firestore_db, "logs", date.toString());
 
+  await setDoc(logsRef, {
+    action: "SEARCH_TEACHER_ACCOUNT",
+    admin_email: `${localStorage.getItem("email")}`,
+    user_email: email,
+    timestamp: date.toString(),
+    description: `${localStorage.getItem(
+      "email"
+    )} searched an teacher account with an email of ${email}`,
+  });
+
+  return isEmailExisting
+    ? emailExistResponse({ data: docData.data() })
+    : emailNotExistingResponse();
 }

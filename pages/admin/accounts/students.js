@@ -18,7 +18,7 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { NavigationBar, PageWrapper } from "../../../constant/components";
-import AccountInformationTable from "../../../constant/components/containers/teacher/account_information";
+import AccountInformationTable from "../../../constant/components/containers/student/account_information";
 import searchAccountInformation from "../../../constant/services/accounts/student/read_information";
 import CreateAccountModal from "../../../constant/components/modals/accounts/student/create_account";
 import getScheduleIDs from "../../../constant/services/schedules/get_schedule_ids";
@@ -42,13 +42,13 @@ export default function Students() {
           </BreadcrumbItem>
 
           <BreadcrumbItem>
-            <BreadcrumbLink href="/admin/accounts/professors">
+            <BreadcrumbLink href="/admin/accounts/students">
               accounts
             </BreadcrumbLink>
           </BreadcrumbItem>
 
           <BreadcrumbItem isCurrentPage>
-            <BreadcrumbLink href="/admin/accounts/professors">
+            <BreadcrumbLink href="/admin/accounts/students">
               students
             </BreadcrumbLink>
           </BreadcrumbItem>

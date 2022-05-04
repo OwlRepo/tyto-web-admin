@@ -12,6 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { FaSignOutAlt } from "react-icons/fa";
 import Router from "next/router";
+import Link from "next/link";
 
 export default function NavigationBar() {
   return (
@@ -35,27 +36,48 @@ export default function NavigationBar() {
               </AccordionButton>
             </h2>
             <AccordionPanel>
-              <Box
-                cursor={"pointer"}
-                textAlign="left"
-                pl={"1.5rem"}
-                pb={"1rem"}
-                onClick={() =>
-                  Router.push({ pathname: "/admin/accounts/students" })
-                }
-              >
-                Students
-              </Box>
-              <Box
-                cursor={"pointer"}
-                textAlign="left"
-                pl={"1.5rem"}
-                onClick={() =>
-                  Router.push({ pathname: "/admin/accounts/teachers" })
-                }
-              >
-                Teachers
-              </Box>
+              <Link href={"/admin/accounts/students"} passHref>
+                <Box
+                  cursor={"pointer"}
+                  textAlign="left"
+                  pl={"1.5rem"}
+                  pb={"1rem"}
+                >
+                  Students
+                </Box>
+              </Link>
+              <Link href={"/admin/accounts/teachers"} passHref>
+                <Box cursor={"pointer"} textAlign="left" pl={"1.5rem"}>
+                  Teachers
+                </Box>
+              </Link>
+            </AccordionPanel>
+          </AccordionItem>
+          <AccordionItem>
+            <h2>
+              <AccordionButton>
+                <Box flex="1" textAlign="left">
+                  Others
+                </Box>
+                <AccordionIcon />
+              </AccordionButton>
+            </h2>
+            <AccordionPanel>
+              <Link href={"/admin/others/schedules"} passHref>
+                <Box
+                  cursor={"pointer"}
+                  textAlign="left"
+                  pl={"1.5rem"}
+                  pb={"1rem"}
+                >
+                  Schedules
+                </Box>
+              </Link>
+              <Link href={"/admin/others/admin_logs"} passHref>
+                <Box cursor={"pointer"} textAlign="left" pl={"1.5rem"}>
+                  Logs
+                </Box>
+              </Link>
             </AccordionPanel>
           </AccordionItem>
         </Accordion>

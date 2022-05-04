@@ -34,7 +34,7 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import updateAccountInformation from "../../../services/accounts/student/update_information";
-import getScheduleIDs from "../../services/schedules/get_schedule_ids";
+import getScheduleIDs from "../../../services/schedules/get_schedule_ids";
 const AccountInformationTable = ({ data, refreshList }) => {
   const [isEditingAccountInfo, setIsEditingAccountInfo] = useState(false);
   const [scheduleIDs, setScheduleIDs] = useState(undefined);

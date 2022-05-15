@@ -20,15 +20,17 @@ import { useState } from "react";
 import { NavigationBar, PageWrapper } from "../../../constant/components";
 import AccountInformationTable from "../../../constant/components/containers/teacher/account_information";
 import searchAccountInformation from "../../../constant/services/accounts/student/read_information";
-import CreateAccountModal from "../../../constant/components/modals/accounts/student/create_account";
+import CreateScheduleModal from "../../../constant/components/modals/accounts/schedule/create_schedule";
 import getScheduleIDs from "../../../constant/services/schedules/get_schedule_ids";
 import { NextSeo } from "next-seo";
+import getEmails from "../../../constant/services/schedules/get_teacher_email";
 
 export default function Schedules() {
   const toast = useToast();
   const [searchedEmail, setSearchedEmail] = useState("");
   const [searchedAccountInfo, setSearchedAccountInfo] = useState(undefined);
   const [scheduleIDS, setScheduleIDs] = useState([]);
+  const [teacherEmails, setTeacherEmails] = useState([])
   const [isSearching, setIsSearching] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -41,15 +43,15 @@ export default function Schedules() {
             <BreadcrumbLink href="/admin">admin</BreadcrumbLink>
           </BreadcrumbItem>
 
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/admin/accounts/professors">
-              accounts
+          <BreadcrumbItem >
+            <BreadcrumbLink href="/admin/accounts/teachers">
+              teacher
             </BreadcrumbLink>
           </BreadcrumbItem>
 
-          <BreadcrumbItem isCurrentPage>
-            <BreadcrumbLink href="/admin/accounts/professors">
-              students
+          <BreadcrumbItem>
+            <BreadcrumbLink isCurrentPage href="/admin/others/schedules">
+              schedules
             </BreadcrumbLink>
           </BreadcrumbItem>
         </Breadcrumb>
@@ -97,10 +99,11 @@ export default function Schedules() {
         title="Admin | Account | Teacher"
         description="Admin dashboard for probex Teacher accounts"
       />
-      <CreateAccountModal
+      <CreateScheduleModal
         isOpen={isOpen}
         onClose={onClose}
         scheduleIDS={scheduleIDS}
+        teacherEmails={teacherEmails}
       />
       <HStack>
         <NavigationBar />
@@ -131,10 +134,10 @@ export default function Schedules() {
                 colorScheme={"green"}
                 paddingX={"10"}
                 onClick={async () => {
-                  setScheduleIDs(await getScheduleIDs()), onOpen();
+                  setScheduleIDs(await getScheduleIDs()), setTeacherEmails(await getEmails()), onOpen();
                 }}
               >
-                <Text color={"white"}> + Create Account</Text>
+                <Text color={"white"}> + Create Schedule</Text>
               </Button>
             </HStack>
 

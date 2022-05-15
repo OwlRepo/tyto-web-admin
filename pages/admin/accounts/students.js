@@ -107,7 +107,7 @@ export default function Students() {
 
         <Box minH={"100vh"} w={"84vw"} p={"2rem"}>
           <PageHeader />
-
+      
           <VStack
             alignItems={"stretch"}
             spacing={isSearching ? "5" : "20"}

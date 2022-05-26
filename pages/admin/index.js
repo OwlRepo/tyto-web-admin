@@ -20,7 +20,8 @@ import { useEffect } from "react";
 export default function Dashboard() {
   useEffect(() => {
     const checkSession = localStorage.getItem("email");
-    if (!checkSession) {
+    const checkAccess = localStorage.getItem("code");
+    if (!checkSession && !checkAccess) {
       Router.push({ pathname: "/" });
     }
   }, []);

@@ -91,7 +91,7 @@ export default function NavigationBar() {
           bg={"title"}
           borderRadius={"md"}
           onClick={() => {
-            localStorage.clear(), Router.push({ pathname: "/" });
+            localStorage.clear(), Router.push({ pathname: "/sign-in" });
           }}
         >
           <HStack alignItems={"center"}>

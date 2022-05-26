@@ -123,4 +123,4 @@ const styleProps = {
     bgColor: "#3B3A42",
     
   }
-};
+}

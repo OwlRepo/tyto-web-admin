@@ -5,6 +5,7 @@ import NavLoginButtonContext from '../constant/context/NavLogInButtonContext';
 import Image from "next/image";
 import Router from "next/router";
 import { useToast } from "@chakra-ui/toast";
+import { Spinner } from "@chakra-ui/spinner";
 import firestore_db from '../constant/configurations/firebase_init';
 import { collection, getDocs, getDoc, where, query } from "@firebase/firestore";
 

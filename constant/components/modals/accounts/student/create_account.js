@@ -66,7 +66,7 @@ const CreateAccountModal = ({ isOpen, onClose, scheduleIDS }) => {
     >
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>CREATE TEACHER ACCOUNT</ModalHeader>
+        <ModalHeader>CREATE STUDENT ACCOUNT</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <Text>Kindly fill out the form below to proceed.</Text>

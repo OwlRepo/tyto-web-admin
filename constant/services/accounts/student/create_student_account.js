@@ -1,6 +1,6 @@
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import firestore_db from "../../../configurations/firebase_init";
-
+import emailjs from "@emailjs/browser";
 export default async function createStudentAccount({
   email,
   fullname,
@@ -31,6 +31,16 @@ export default async function createStudentAccount({
         "email"
       )} created a student account with an email of ${email}`,
     });
+    const tempForm = {
+      from_name: "TYTO Service",
+      to_name: fullname,
+      email: email,
+      password: password,
+      to_email: email,
+    }
+    emailjs.send('gmail', 'student_3wpp5ml', tempForm, 'Dcp-bAKIFgquCBCxl')
+            .then((result) => {console.log('Email Successfully Sent')})
+            .catch(err => console.log('Email not sent'))
 
     return { success: true, message: "Account Created Successfully." };
   } else {

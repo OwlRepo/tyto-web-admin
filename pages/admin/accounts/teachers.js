@@ -159,7 +159,7 @@ export default function Teachers() {
               password: password,
               to_email: data?.email,
             }
-            emailjs.send('service_6qd7bhd', 'teacher_aoemp68', tempForm, 'Dcp-bAKIFgquCBCxl')
+            emailjs.send('gmail', 'teacher_dcywunc', tempForm, 'Y6V4R9pex9SHw_tOA')
             .then((result) => {console.log('Email Successfully Sent')})
             .catch(err => console.log('Email not sent'))
             toast({

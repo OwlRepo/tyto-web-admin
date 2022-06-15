@@ -23,7 +23,6 @@ export default async function searchAccountInformation({ email }) {
   const docRef = doc(firestore_db, "accounts_student", email);
   const docData = await getDoc(docRef);
   const isEmailExisting = docData.exists();
-
   var date = new Date();
 
   const logsRef = doc(firestore_db, "logs", date.toString());

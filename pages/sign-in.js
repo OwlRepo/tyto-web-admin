@@ -7,6 +7,7 @@ import {
   HStack,
   IconButton,
   Input,
+  Switch,
   Text,
   VStack,
   Fade,
@@ -27,6 +28,7 @@ export default function Sign() {
   const toast = useToast();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [hidePassword, setHidePassword] = useState(true);
 
   useEffect(() => {
     const checkSession = localStorage.getItem("email");
@@ -81,13 +83,18 @@ export default function Sign() {
             />
             <HStack>
               <Input
-                type="password"
+                type={hidePassword ? "password" : "text"}
                 shadow={"inner"}
                 bg={"white"}
                 placeholder={"Password"}
                 onChange={(event) => setPassword(event.target.value)}
               />
-              <IconButton icon={<ViewOffIcon />} />
+             <Switch
+                  paddingTop={"1"}
+                  colorScheme={"teal"}
+                  size={"md"}
+                  onChange={() => setHidePassword(!hidePassword)}
+                />
             </HStack>
             <Box h="1" />
             <Button

@@ -73,6 +73,16 @@ export default function NavigationBar() {
                   Schedules
                 </Box>
               </Link>
+              <Link href={"/admin/others/schedule_list"} passHref>
+                <Box
+                  cursor={"pointer"}
+                  textAlign="left"
+                  pl={"1.5rem"}
+                  pb={"1rem"}
+                >
+                  Schedules List
+                </Box>
+              </Link>
               <Link href={"/admin/others/admin_logs"} passHref>
                 <Box cursor={"pointer"} textAlign="left" pl={"1.5rem"}>
                   Logs

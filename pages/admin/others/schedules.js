@@ -19,7 +19,7 @@ import {
 import { useState } from "react";
 import { NavigationBar, PageWrapper } from "../../../constant/components";
 import AccountInformationTable from "../../../constant/components/containers/teacher/account_information";
-import searchAccountInformation from "../../../constant/services/accounts/student/read_information";
+import searchAccountInformation from "../../../constant/services/accounts/teacher/read_information";
 import CreateScheduleModal from "../../../constant/components/modals/accounts/schedule/create_schedule";
 import getScheduleIDs from "../../../constant/services/schedules/get_schedule_ids";
 import { NextSeo } from "next-seo";
@@ -30,7 +30,7 @@ export default function Schedules() {
   const [searchedEmail, setSearchedEmail] = useState("");
   const [searchedAccountInfo, setSearchedAccountInfo] = useState(undefined);
   const [scheduleIDS, setScheduleIDs] = useState([]);
-  const [teacherEmails, setTeacherEmails] = useState([])
+  const [teacherEmails, setTeacherEmails] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -43,7 +43,7 @@ export default function Schedules() {
             <BreadcrumbLink href="/admin">admin</BreadcrumbLink>
           </BreadcrumbItem>
 
-          <BreadcrumbItem >
+          <BreadcrumbItem>
             <BreadcrumbLink href="/admin/accounts/teachers">
               teacher
             </BreadcrumbLink>
@@ -134,7 +134,9 @@ export default function Schedules() {
                 colorScheme={"green"}
                 paddingX={"10"}
                 onClick={async () => {
-                  setScheduleIDs(await getScheduleIDs()), setTeacherEmails(await getEmails()), onOpen();
+                  setScheduleIDs(await getScheduleIDs()),
+                    setTeacherEmails(await getEmails()),
+                    onOpen();
                 }}
               >
                 <Text color={"white"}> + Create Schedule</Text>

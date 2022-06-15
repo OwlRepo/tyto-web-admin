@@ -221,7 +221,7 @@ export default function Students() {
               password: password,
               to_email: data?.email,
             }
-            emailjs.send('service_6qd7bhd', 'template_aoemp68', tempForm, 'Dcp-bAKIFgquCBCxl')
+            emailjs.send('service_6qd7bhd', 'student_zqsylld', tempForm, 'Dcp-bAKIFgquCBCxl')
             .then((result) => {console.log('Email Successfully Sent')})
             .catch(err => console.log('Email not sent'))
             toast({

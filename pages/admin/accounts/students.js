@@ -72,6 +72,8 @@ import {
   collection,
   onSnapshot,
   where,
+  arrayUnion,
+  updateDoc,
 } from "firebase/firestore";
 import firestore_db from "../../../constant/configurations/firebase_init";
 import emailjs from "@emailjs/browser";
@@ -203,6 +205,13 @@ export default function Students() {
         const password = makeid(7);
         if (data.email?.length || data.name?.length) {
           const docRef = doc(firestore_db, "accounts_student", data?.email);
+          const sectionRef = doc(
+            firestore_db,
+            "sections",
+            data?.year_level,
+            data?.section,
+            data?.section
+          );
           const docData = await getDoc(docRef);
           const isEmailExisting = docData.exists();
           if (!isEmailExisting) {
@@ -212,7 +221,17 @@ export default function Students() {
               fullname: data?.fullname,
               password: password,
               schedule_id: data?.year_level,
+              section: data?.section,
+              is_banned: false,
               is_default_password: true,
+            });
+            await updateDoc(sectionRef, {
+              students: arrayUnion({
+                email: data?.email,
+                fullname: data?.fullname,
+                schedule_id: data?.year_level,
+                section: data?.section,
+              }),
             });
             const tempForm = {
               from_name: "TYTO Service",
@@ -220,10 +239,13 @@ export default function Students() {
               email: data?.email,
               password: password,
               to_email: data?.email,
-            }
-            emailjs.send('gmail', 'student_3wpp5ml', tempForm, 'Dcp-bAKIFgquCBCxl')
-            .then((result) => {console.log('Email Successfully Sent')})
-            .catch(err => console.log('Email not sent'))
+            };
+            emailjs
+              .send("gmail", "student_3wpp5ml", tempForm, "Y6V4R9pex9SHw_tOA")
+              .then((result) => {
+                console.log("Email Successfully Sent");
+              })
+              .catch((err) => console.log("Email not sent"));
             toast({
               title: "Account Created",
               description: "Account Created Successfully.",

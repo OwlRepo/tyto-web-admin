@@ -17,19 +17,59 @@ import {
 
 import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+import {
+  doc,
+  getDoc,
+  setDoc,
+  getDocs,
+  query,
+  collection,
+  onSnapshot,
+  where,
+} from "firebase/firestore";
+import firestore_db from "../../../../configurations/firebase_init";
 import createStudentAccount from "../../../../services/accounts/student/create_student_account";
 const CreateAccountModal = ({ isOpen, onClose, scheduleIDS }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullname, setFullname] = useState("");
   const [scheduleID, setScheduleID] = useState("");
+  const [sections, setSections] = useState([]);
+  const [selectedSection, setSelectedSection] = useState("");
   const toast = useToast();
+
+  function makeid(length) {
+    var result = "";
+    var characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    var charactersLength = characters.length;
+    for (var i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+  }
+
+  function readSection(grade_level) {
+    const sectionPath = doc(firestore_db, "sections", grade_level);
+    const unsub = onSnapshot(sectionPath, (doc) => {
+      const section = [];
+      doc.data()?.section.map((data) => {
+        section.push(data.section);
+      });
+
+      setSections([...section]);
+      //   schedules.map((data) => console.log(data.name, data.grade_level));
+      console.log(sections);
+    });
+  }
+
   const processCreateAccount = async () => {
     const createAccountResult = await createStudentAccount({
       email: email,
       fullname: fullname,
-      password: password,
+      password: makeid(7),
       schedule_id: scheduleID,
+      section: selectedSection,
     });
 
     if (createAccountResult.success) {
@@ -102,7 +142,10 @@ const CreateAccountModal = ({ isOpen, onClose, scheduleIDS }) => {
                     return (
                       <MenuItem
                         key={index}
-                        onClick={() => setScheduleID(data.id)}
+                        onClick={() => {
+                          readSection(data.id);
+                          setScheduleID(data.id);
+                        }}
                       >
                         {data.id}
                       </MenuItem>
@@ -112,13 +155,28 @@ const CreateAccountModal = ({ isOpen, onClose, scheduleIDS }) => {
               </Menu>
             </Box>
             <Box width={"100%"}>
-              <Text>Password</Text>
-              <Input
-                type={"password"}
-                variant={"filled"}
-                placeholder={"****"}
-                onChange={(event) => setPassword(event.target.value)}
-              />
+              <Text>Section</Text>
+              <Menu>
+                <MenuButton
+                  width={"100%"}
+                  as={Button}
+                  rightIcon={<ChevronDownIcon />}
+                >
+                  {selectedSection === "" ? "Select Section" : selectedSection}
+                </MenuButton>
+                <MenuList>
+                  {sections.map((data, index) => {
+                    return (
+                      <MenuItem
+                        key={index}
+                        onClick={() => setSelectedSection(data)}
+                      >
+                        {data}
+                      </MenuItem>
+                    );
+                  })}
+                </MenuList>
+              </Menu>
             </Box>
           </VStack>
         </ModalBody>

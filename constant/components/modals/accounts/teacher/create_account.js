@@ -25,11 +25,23 @@ const CreateAccountModal = ({ isOpen, onClose, scheduleIDS }) => {
   const [fullname, setFullname] = useState("");
   const [scheduleID, setScheduleID] = useState("");
   const toast = useToast();
+
+  function makeid(length) {
+    var result = "";
+    var characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    var charactersLength = characters.length;
+    for (var i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+  }
+
   const processCreateAccount = async () => {
     const createAccountResult = await createTeacherAccount({
       email: email,
       fullname: fullname,
-      password: password,
+      password: makeid(7),
       schedule_id: scheduleID,
     });
 
@@ -111,15 +123,6 @@ const CreateAccountModal = ({ isOpen, onClose, scheduleIDS }) => {
                   })}
                 </MenuList>
               </Menu>
-            </Box>
-            <Box width={"100%"}>
-              <Text>Password</Text>
-              <Input
-                type={"password"}
-                variant={"filled"}
-                placeholder={"****"}
-                onChange={(event) => setPassword(event.target.value)}
-              />
             </Box>
           </VStack>
         </ModalBody>

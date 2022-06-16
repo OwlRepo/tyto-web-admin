@@ -1,4 +1,4 @@
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { arrayUnion, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import firestore_db from "../../../configurations/firebase_init";
 import emailjs from "@emailjs/browser";
 export default async function createStudentAccount({
@@ -6,6 +6,7 @@ export default async function createStudentAccount({
   fullname,
   schedule_id,
   password,
+  section,
 }) {
   const docRef = doc(firestore_db, "accounts_student", email);
   const docData = await getDoc(docRef);
@@ -13,13 +14,31 @@ export default async function createStudentAccount({
   var date = new Date();
 
   const logsRef = doc(firestore_db, "logs", date.toString());
+  const sectionRef = doc(
+    firestore_db,
+    "sections",
+    schedule_id,
+    section,
+    section
+  );
 
   if (!isEmailExisting) {
     await setDoc(docRef, {
       email: email,
       fullname: fullname,
       schedule_id: schedule_id,
+      section: section,
       password: password,
+      is_default_password: true,
+      is_banned: false,
+    });
+    await updateDoc(sectionRef, {
+      students: arrayUnion({
+        email: email,
+        fullname: fullname,
+        schedule_id: schedule_id,
+        section: section,
+      }),
     });
 
     await setDoc(logsRef, {
@@ -37,10 +56,13 @@ export default async function createStudentAccount({
       email: email,
       password: password,
       to_email: email,
-    }
-    emailjs.send('gmail', 'student_3wpp5ml', tempForm, 'Dcp-bAKIFgquCBCxl')
-            .then((result) => {console.log('Email Successfully Sent')})
-            .catch(err => console.log('Email not sent'))
+    };
+    emailjs
+      .send("gmail", "student_3wpp5ml", tempForm, "Y6V4R9pex9SHw_tOA")
+      .then((result) => {
+        console.log("Email Successfully Sent");
+      })
+      .catch((err) => console.log("Email not sent"));
 
     return { success: true, message: "Account Created Successfully." };
   } else {

@@ -57,7 +57,7 @@ import { useState, useEffect } from "react";
 import { NavigationBar, PageWrapper } from "../../../constant/components";
 import AccountInformationTable from "../../../constant/components/containers/teacher/account_information";
 import searchAccountInformation from "../../../constant/services/accounts/teacher/read_information";
-import CreateScheduleModal from "../../../constant/components/modals/accounts/schedule/create_schedule";
+import CreateSectionModal from "../../../constant/components/modals/accounts/section/create_section";
 import getScheduleIDs from "../../../constant/services/schedules/get_schedule_ids";
 import { NextSeo } from "next-seo";
 import getEmails from "../../../constant/services/schedules/get_teacher_email";
@@ -73,7 +73,7 @@ import {
 } from "firebase/firestore";
 import firestore_db from "../../../constant/configurations/firebase_init";
 
-export default function ScheduleList() {
+export default function Sections() {
   const toast = useToast();
   const [searchedEmail, setSearchedEmail] = useState("");
   const [searchedAccountInfo, setSearchedAccountInfo] = useState(undefined);
@@ -84,6 +84,9 @@ export default function ScheduleList() {
   const [isSearching, setIsSearching] = useState(false);
   const [schedules, setSchedules] = useState([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [sections, setSections] = useState([]);
+  const [students, setStudents] = useState([]);
+  const [selectedSection, setSelectedSection] = useState("");
   useEffect(() => {
     getSchedules();
   }, []);
@@ -92,38 +95,71 @@ export default function ScheduleList() {
     setScheduleID(await getScheduleIDs());
   }
 
-  function readData(id) {
-    const schedulePath = doc(firestore_db, "schedules", id);
-    const unsub = onSnapshot(schedulePath, (doc) => {
-      const schedule = [];
-      doc.data().subjects.map((data) => {
-        schedule.push(data);
+  function readData(section) {
+    const sectionPath = doc(
+      firestore_db,
+      "sections",
+      selectedScheduleID,
+      section,
+      section
+    );
+    const unsub = onSnapshot(sectionPath, (doc) => {
+      const student = [];
+      doc.data().students.map((data) => {
+        student.push(data);
       });
 
-      setSchedules([...schedule]);
+      setStudents([...student]);
       //   schedules.map((data) => console.log(data.name, data.grade_level));
-      console.log(schedules);
+      console.log(students);
     });
   }
+
+  function readSection(grade_level) {
+    const sectionPath = doc(firestore_db, "sections", grade_level);
+    const unsub = onSnapshot(sectionPath, (doc) => {
+      const section = [];
+      doc.data()?.section.map((data) => {
+        section.push(data.section);
+      });
+
+      setSections([...section]);
+      //   schedules.map((data) => console.log(data.name, data.grade_level));
+      console.log(sections);
+    });
+  }
+
+  //   function readSection(section) {
+  //     const schedulePath = doc(
+  //       firestore_db,
+  //       "sections",
+  //       selectedScheduleID,
+  //       section,
+  //       section
+  //     );
+  //     const unsub = onSnapshot(schedulePath, (doc) => {
+  //       const schedule = [];
+  //       doc.data().subjects.map((data) => {
+  //         schedule.push(data);
+  //       });
+
+  //       setSchedules([...schedule]);
+  //       //   schedules.map((data) => console.log(data.name, data.grade_level));
+  //       console.log(schedules);
+  //     });
+  //   }
 
   const PageHeader = () => {
     return (
       <VStack alignItems={"flex-start"}>
-        <Heading color="title">SCHEDULE LIST</Heading>
+        <Heading color="title">{"SECTION'S SCHEDULE"}</Heading>
         <Breadcrumb fontWeight="medium" fontSize="sm">
           <BreadcrumbItem>
             <BreadcrumbLink href="/admin">admin</BreadcrumbLink>
           </BreadcrumbItem>
-
           <BreadcrumbItem>
-            <BreadcrumbLink href="/admin/accounts/teachers">
-              teacher
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-
-          <BreadcrumbItem>
-            <BreadcrumbLink isCurrentPage href="/admin/others/schedules">
-              schedule list
+            <BreadcrumbLink isCurrentPage href="/admin/others/sections">
+              Sections
             </BreadcrumbLink>
           </BreadcrumbItem>
         </Breadcrumb>
@@ -137,7 +173,7 @@ export default function ScheduleList() {
         title="Admin | Account | Schedules"
         description="Admin dashboard for probex Scedules"
       />
-      <CreateScheduleModal
+      <CreateSectionModal
         isOpen={isOpen}
         onClose={onClose}
         scheduleIDS={scheduleIDS}
@@ -171,8 +207,8 @@ export default function ScheduleList() {
                       return (
                         <MenuItem
                           key={index}
-                          onClick={async () => {
-                            readData(data.id);
+                          onClick={() => {
+                            readSection(data.id);
                             setSelectedScheduleID(data.id);
                           }}
                         >
@@ -183,8 +219,32 @@ export default function ScheduleList() {
                   </MenuList>
                 </Menu>
               ) : (
-                "data.schedule_id"
+                ""
               )}
+              <Menu>
+                <MenuButton
+                  width={"35%"}
+                  as={Button}
+                  rightIcon={<ChevronDownIcon />}
+                >
+                  {selectedSection === "" ? "Select Section" : selectedSection}
+                </MenuButton>
+                <MenuList>
+                  {sections.map((data, index) => {
+                    return (
+                      <MenuItem
+                        key={index}
+                        onClick={() => {
+                          readData(data);
+                          setSelectedSection(data);
+                        }}
+                      >
+                        {data}
+                      </MenuItem>
+                    );
+                  })}
+                </MenuList>
+              </Menu>
               <Button
                 backgroundColor={"green.500"}
                 colorScheme={"green"}
@@ -207,22 +267,20 @@ export default function ScheduleList() {
                   <Thead position={"sticky"}>
                     <Tr>
                       <Th>Grade Level</Th>
-                      <Th>Subject</Th>
-                      <Th>Time</Th>
-                      <Th>Teacher</Th>
-                      <Th>Teachers Email</Th>
+                      <Th>Section</Th>
+                      <Th>Student Name</Th>
+                      <Th>Student Email</Th>
                     </Tr>
                   </Thead>
                   <Tbody>
-                    {schedules
-                      ? schedules.map((data, index) => {
+                    {students
+                      ? students.map((data, index) => {
                           return (
                             <Tr key={index}>
                               <Td>{data.grade_level}</Td>
-                              <Td>{data.name}</Td>
-                              <Td>{data.time}</Td>
-                              <Td>{data.teacher_name}</Td>
-                              <Td>{data.teacher_email}</Td>
+                              <Td>{data.section}</Td>
+                              <Td>{data.fullname}</Td>
+                              <Td>{data.email}</Td>
                             </Tr>
                           );
                         })

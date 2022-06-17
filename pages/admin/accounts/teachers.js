@@ -6,6 +6,7 @@ import {
   EditIcon,
   SearchIcon,
   AddIcon,
+  DownloadIcon,
 } from "@chakra-ui/icons";
 import {
   Box,
@@ -75,6 +76,7 @@ import { NextSeo } from "next-seo";
 import firestore_db from "../../../constant/configurations/firebase_init";
 import Papa from "papaparse";
 import emailjs from "@emailjs/browser";
+import { CSVLink, CSVDownload } from "react-csv";
 export default function Teachers() {
   const [isEditingAccountInfo, setIsEditingAccountInfo] = useState(false);
   const [scheduleID, setScheduleID] = useState(undefined);
@@ -158,10 +160,13 @@ export default function Teachers() {
               email: data?.email,
               password: password,
               to_email: data?.email,
-            }
-            emailjs.send('gmail', 'teacher_dcywunc', tempForm, 'Y6V4R9pex9SHw_tOA')
-            .then((result) => {console.log('Email Successfully Sent')})
-            .catch(err => console.log('Email not sent'))
+            };
+            emailjs
+              .send("gmail", "teacher_dcywunc", tempForm, "Y6V4R9pex9SHw_tOA")
+              .then((result) => {
+                console.log("Email Successfully Sent");
+              })
+              .catch((err) => console.log("Email not sent"));
             toast({
               title: "Account Created",
               description: "Account Created Successfully.",
@@ -445,6 +450,16 @@ export default function Teachers() {
               >
                 <Text color={"white"}>Upload</Text>
               </Button>
+              <Button
+                backgroundColor={"green.500"}
+                colorScheme={"green"}
+                paddingX={"10"}
+                leftIcon={<DownloadIcon />}
+              >
+                <CSVLink filename={"teachers-backup.csv"} data={teachers}>
+                  Backup
+                </CSVLink>
+              </Button>
             </HStack>
 
             {searchedAccountInfo === undefined ? (
@@ -471,7 +486,7 @@ export default function Teachers() {
                             <Th>Email</Th>
                             <Th>Password</Th>
                             <Th>Fullname</Th>
-                            <Th>Schedule ID</Th>
+                            <Th>Role</Th>
                             <Th>Action</Th>
                           </Tr>
                         </Thead>
@@ -526,36 +541,7 @@ export default function Teachers() {
                                       data.fullname
                                     )}
                                   </Td>
-                                  <Td>
-                                    {isEditingAccountInfo &&
-                                    accountEmail === data?.email &&
-                                    scheduleID !== undefined ? (
-                                      <Menu>
-                                        <MenuButton
-                                          as={Button}
-                                          rightIcon={<ChevronDownIcon />}
-                                        >
-                                          {selectedScheduleID}
-                                        </MenuButton>
-                                        <MenuList>
-                                          {scheduleID.map((data, index) => {
-                                            return (
-                                              <MenuItem
-                                                key={index}
-                                                onClick={() =>
-                                                  setSelectedScheduleID(data.id)
-                                                }
-                                              >
-                                                {data.id}
-                                              </MenuItem>
-                                            );
-                                          })}
-                                        </MenuList>
-                                      </Menu>
-                                    ) : (
-                                      data.schedule_id
-                                    )}
-                                  </Td>
+                                  <Td>Teacher</Td>
                                   <Td>
                                     {isEditingAccountInfo &&
                                     accountEmail === data?.email &&

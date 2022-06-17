@@ -7,6 +7,7 @@ export default async function createTeacherSchedule({
   teacher_email,
   teacher_name,
   schedule_id,
+  section,
   time,
 }) {
   const docRef = doc(firestore_db, "schedules", schedule_id);
@@ -15,7 +16,13 @@ export default async function createTeacherSchedule({
   var date = new Date();
 
   const logsRef = doc(firestore_db, "logs", date.toString());
-
+  const sectionRef = doc(
+    firestore_db,
+    "sections",
+    schedule_id,
+    section,
+    section
+  );
   if (isEmailExisting) {
     await updateDoc(docRef, {
       subjects: arrayUnion({
@@ -23,6 +30,18 @@ export default async function createTeacherSchedule({
         room_id: room_id,
         teacher_email: teacher_email,
         teacher_name: teacher_name,
+        section: section,
+        time: time,
+        grade_level: schedule_id,
+      }),
+    });
+    await updateDoc(sectionRef, {
+      subjects: arrayUnion({
+        name: name,
+        room_id: room_id,
+        teacher_email: teacher_email,
+        teacher_name: teacher_name,
+        section: section,
         time: time,
         grade_level: schedule_id,
       }),

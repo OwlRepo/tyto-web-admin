@@ -14,11 +14,22 @@ import {
   Box,
   useToast,
 } from "@chakra-ui/react";
-
+import {
+  doc,
+  getDoc,
+  setDoc,
+  getDocs,
+  query,
+  collection,
+  onSnapshot,
+  where,
+} from "firebase/firestore";
+import firestore_db from "../../../../configurations/firebase_init";
 import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import createTeacherSchedule from "../../../../services/accounts/teacher_schedule/create_schedule";
 import moment from "moment";
+import { CSVLink, CSVDownload } from "react-csv";
 const CreateScheduleModal = ({
   isOpen,
   onClose,
@@ -31,6 +42,8 @@ const CreateScheduleModal = ({
   const [roomId, setRoomID] = useState("");
   const [classTime, setClassTime] = useState("");
   const [scheduleID, setScheduleID] = useState("");
+  const [sections, setSections] = useState([]);
+  const [selectedSection, setSelectedSection] = useState("");
   const toast = useToast();
 
   const ClassTime = [
@@ -41,22 +54,17 @@ const CreateScheduleModal = ({
     "11:00 AM - 11:40 AM",
     "1:00 PM - 1:40 PM",
     "1:40 PM - 2:20 PM",
+    "2:20 PM - 3:00 PM",
+    "3:00 PM - 3:20 PM",
   ];
   const processCreateSchedule = async () => {
-    var room = "";
-    var characters =
-      "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890";
-    var charactersLength = characters.length;
-    for (var i = 0; i < roomId.length * 2; i++) {
-      room += characters.charAt(Math.floor(Math.random() * charactersLength));
-    }
-    console.log(roomId + "_" + room);
     const createAccountResult = await createTeacherSchedule({
       name: subjectName,
-      room_id: roomId + "_" + room,
+      room_id: roomId,
       teacher_email: email,
       teacher_name: fullName,
       schedule_id: scheduleID,
+      section: selectedSection,
       time: classTime,
     });
 
@@ -80,6 +88,27 @@ const CreateScheduleModal = ({
       onClose();
     }
   };
+
+  function getRoomId(section) {
+    const dbPath = doc(firestore_db, "sections", scheduleID, section, section);
+    const unsub = onSnapshot(dbPath, (doc) => {
+      setRoomID(doc.data().room_id);
+    });
+  }
+
+  function readSection(grade_level) {
+    const sectionPath = doc(firestore_db, "sections", grade_level);
+    const unsub = onSnapshot(sectionPath, (doc) => {
+      const section = [];
+      doc.data()?.section.map((data) => {
+        section.push(data.section);
+      });
+
+      setSections([...section]);
+      //   schedules.map((data) => console.log(data.name, data.grade_level));
+      console.log(sections);
+    });
+  }
 
   return (
     <Modal
@@ -143,14 +172,6 @@ const CreateScheduleModal = ({
               />
             </Box>
             <Box width={"100%"}>
-              <Text>Room ID</Text>
-              <Input
-                variant={"filled"}
-                placeholder={"7English"}
-                onChange={(event) => setRoomID(event.target.value)}
-              />
-            </Box>
-            <Box width={"100%"}>
               <Text>Schedule ID</Text>
               <Menu>
                 <MenuButton
@@ -165,9 +186,39 @@ const CreateScheduleModal = ({
                     return (
                       <MenuItem
                         key={index}
-                        onClick={() => setScheduleID(data.id)}
+                        onClick={() => {
+                          readSection(data.id);
+                          setScheduleID(data.id);
+                        }}
                       >
                         {data.id}
+                      </MenuItem>
+                    );
+                  })}
+                </MenuList>
+              </Menu>
+            </Box>
+            <Box width={"100%"}>
+              <Text>Section</Text>
+              <Menu>
+                <MenuButton
+                  width={"100%"}
+                  as={Button}
+                  rightIcon={<ChevronDownIcon />}
+                >
+                  {selectedSection === "" ? "Select Section" : selectedSection}
+                </MenuButton>
+                <MenuList>
+                  {sections.map((data, index) => {
+                    return (
+                      <MenuItem
+                        key={index}
+                        onClick={() => {
+                          getRoomId(data);
+                          setSelectedSection(data);
+                        }}
+                      >
+                        {data}
                       </MenuItem>
                     );
                   })}

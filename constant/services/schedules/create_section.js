@@ -16,7 +16,7 @@ export default async function createSection({ section, schedule_id, room_id }) {
       section: section,
       grade_level: schedule_id,
     });
-    await setDoc(docRef1, {
+    await updateDoc(docRef1, {
       section: arrayUnion({
         section: section,
         grade_level: schedule_id,

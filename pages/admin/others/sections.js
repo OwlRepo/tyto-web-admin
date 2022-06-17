@@ -105,7 +105,7 @@ export default function Sections() {
     );
     const unsub = onSnapshot(sectionPath, (doc) => {
       const student = [];
-      doc.data().students.map((data) => {
+      doc.data()?.students?.map((data) => {
         student.push(data);
       });
 
@@ -119,7 +119,7 @@ export default function Sections() {
     const sectionPath = doc(firestore_db, "sections", grade_level);
     const unsub = onSnapshot(sectionPath, (doc) => {
       const section = [];
-      doc.data()?.section.map((data) => {
+      doc.data()?.section?.map((data) => {
         section.push(data.section);
       });
 
@@ -255,7 +255,7 @@ export default function Sections() {
                     onOpen();
                 }}
               >
-                <Text color={"white"}> + Create Schedule</Text>
+                <Text color={"white"}> + Create Section</Text>
               </Button>
             </HStack>
             <Box>
@@ -277,7 +277,7 @@ export default function Sections() {
                       ? students.map((data, index) => {
                           return (
                             <Tr key={index}>
-                              <Td>{data.grade_level}</Td>
+                              <Td>{data.schedule_id}</Td>
                               <Td>{data.section}</Td>
                               <Td>{data.fullname}</Td>
                               <Td>{data.email}</Td>

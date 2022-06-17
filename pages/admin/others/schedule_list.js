@@ -96,7 +96,7 @@ export default function ScheduleList() {
     const schedulePath = doc(firestore_db, "schedules", id);
     const unsub = onSnapshot(schedulePath, (doc) => {
       const schedule = [];
-      doc.data().subjects.map((data) => {
+      doc.data()?.subjects?.map((data) => {
         schedule.push(data);
       });
 

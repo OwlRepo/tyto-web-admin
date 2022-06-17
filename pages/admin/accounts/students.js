@@ -6,6 +6,7 @@ import {
   EditIcon,
   SearchIcon,
   AddIcon,
+  DownloadIcon,
 } from "@chakra-ui/icons";
 import {
   Box,
@@ -77,6 +78,7 @@ import {
 } from "firebase/firestore";
 import firestore_db from "../../../constant/configurations/firebase_init";
 import emailjs from "@emailjs/browser";
+import { CSVLink, CSVDownload } from "react-csv";
 export default function Students() {
   const [isEditingAccountInfo, setIsEditingAccountInfo] = useState(false);
   const [scheduleID, setScheduleID] = useState(undefined);
@@ -455,14 +457,12 @@ export default function Students() {
                 backgroundColor={"green.500"}
                 colorScheme={"green"}
                 paddingX={"10"}
-                leftIcon={<AddIcon />}
                 onClick={async () => {
                   setScheduleIDs(await getScheduleIDs()), onOpen();
                 }}
               >
                 <Text color={"white"}>Create Account</Text>
               </Button>
-
               <Button
                 backgroundColor={"green.500"}
                 colorScheme={"green"}
@@ -471,6 +471,16 @@ export default function Students() {
                 onClick={onOpenAddAccounts}
               >
                 <Text color={"white"}>Upload</Text>
+              </Button>
+              <Button
+                backgroundColor={"green.500"}
+                colorScheme={"green"}
+                paddingX={"10"}
+                leftIcon={<DownloadIcon />}
+              >
+                <CSVLink filename={"students-backup.csv"} data={students}>
+                  Backup
+                </CSVLink>
               </Button>
             </HStack>
 

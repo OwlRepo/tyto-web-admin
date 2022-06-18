@@ -122,7 +122,6 @@ export default function Students() {
     const studentPath = collection(firestore_db, "accounts_student");
     const unsub = onSnapshot(studentPath, (studentInfo) => {
       const student = [];
-      setStudents((students) => [...students, student]);
       studentInfo.forEach((docs) => {
         student.push(docs.data());
       });

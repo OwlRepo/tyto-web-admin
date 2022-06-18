@@ -119,7 +119,6 @@ export default function Teachers() {
     const teacherPath = collection(firestore_db, "accounts_teacher");
     const unsub = onSnapshot(teacherPath, (teacherInfo) => {
       const teacher = [];
-      setTeachers((teachers) => [...teachers, teacher]);
       teacherInfo.forEach((docs) => {
         teacher.push(docs.data());
       });

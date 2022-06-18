@@ -87,6 +87,8 @@ export default function Sections() {
   const [sections, setSections] = useState([]);
   const [students, setStudents] = useState([]);
   const [selectedSection, setSelectedSection] = useState("");
+  const [type, setType] = useState("");
+  const [subjects, setSubjects] = useState([]);
   useEffect(() => {
     getSchedules();
   }, []);
@@ -95,21 +97,26 @@ export default function Sections() {
     setScheduleID(await getScheduleIDs());
   }
 
-  function readData(section) {
+  function readData() {
     const sectionPath = doc(
       firestore_db,
       "sections",
       selectedScheduleID,
-      section,
-      section
+      selectedSection,
+      selectedSection
     );
     const unsub = onSnapshot(sectionPath, (doc) => {
       const student = [];
+      const subject = [];
       doc.data()?.students?.map((data) => {
         student.push(data);
       });
+      doc.data()?.subjects?.map((data) => {
+        subject.push(data);
+      });
 
       setStudents([...student]);
+      setSubjects([...subject]);
       //   schedules.map((data) => console.log(data.name, data.grade_level));
       console.log(students);
     });
@@ -148,6 +155,7 @@ export default function Sections() {
   //       console.log(schedules);
   //     });
   //   }
+  const initialType = ["Student", "Subject"];
 
   const PageHeader = () => {
     return (
@@ -235,8 +243,31 @@ export default function Sections() {
                       <MenuItem
                         key={index}
                         onClick={() => {
-                          readData(data);
                           setSelectedSection(data);
+                        }}
+                      >
+                        {data}
+                      </MenuItem>
+                    );
+                  })}
+                </MenuList>
+              </Menu>
+              <Menu>
+                <MenuButton
+                  width={"35%"}
+                  as={Button}
+                  rightIcon={<ChevronDownIcon />}
+                >
+                  {type === "" ? "Select Type" : type}
+                </MenuButton>
+                <MenuList>
+                  {initialType.map((data, index) => {
+                    return (
+                      <MenuItem
+                        key={index}
+                        onClick={() => {
+                          readData();
+                          setType(data);
                         }}
                       >
                         {data}
@@ -262,32 +293,63 @@ export default function Sections() {
               <Center>
                 <Heading>Schedule List Information</Heading>
               </Center>
-              <TableContainer maxH={"50vh"} overflowY={"scroll"}>
-                <Table variant="striped" colorScheme="facebook">
-                  <Thead position={"sticky"}>
-                    <Tr>
-                      <Th>Grade Level</Th>
-                      <Th>Section</Th>
-                      <Th>Student Name</Th>
-                      <Th>Student Email</Th>
-                    </Tr>
-                  </Thead>
-                  <Tbody>
-                    {students
-                      ? students.map((data, index) => {
-                          return (
-                            <Tr key={index}>
-                              <Td>{data.schedule_id}</Td>
-                              <Td>{data.section}</Td>
-                              <Td>{data.fullname}</Td>
-                              <Td>{data.email}</Td>
-                            </Tr>
-                          );
-                        })
-                      : `Start selecting for grade level to get started`}
-                  </Tbody>
-                </Table>
-              </TableContainer>
+              {type === "Student" ? (
+                <TableContainer maxH={"50vh"} overflowY={"scroll"}>
+                  <Table variant="striped" colorScheme="facebook">
+                    <Thead position={"sticky"}>
+                      <Tr>
+                        <Th>Grade Level</Th>
+                        <Th>Section</Th>
+                        <Th>Student Name</Th>
+                        <Th>Student Email</Th>
+                      </Tr>
+                    </Thead>
+                    <Tbody>
+                      {students
+                        ? students.map((data, index) => {
+                            return (
+                              <Tr key={index}>
+                                <Td>{data.schedule_id}</Td>
+                                <Td>{data.section}</Td>
+                                <Td>{data.fullname}</Td>
+                                <Td>{data.email}</Td>
+                              </Tr>
+                            );
+                          })
+                        : `Start selecting for grade level to get started`}
+                    </Tbody>
+                  </Table>
+                </TableContainer>
+              ) : (
+                <TableContainer maxH={"50vh"} overflowY={"scroll"}>
+                  <Table variant="striped" colorScheme="facebook">
+                    <Thead position={"sticky"}>
+                      <Tr>
+                        <Th>Grade Level</Th>
+                        <Th>Subject</Th>
+                        <Th>Time</Th>
+                        <Th>Teacher</Th>
+                        <Th>Teachers Email</Th>
+                      </Tr>
+                    </Thead>
+                    <Tbody>
+                      {subjects
+                        ? subjects.map((data, index) => {
+                            return (
+                              <Tr key={index}>
+                                <Td>{data.grade_level}</Td>
+                                <Td>{data.name}</Td>
+                                <Td>{data.time}</Td>
+                                <Td>{data.teacher_name}</Td>
+                                <Td>{data.teacher_email}</Td>
+                              </Tr>
+                            );
+                          })
+                        : `Start selecting for grade level to get started`}
+                    </Tbody>
+                  </Table>
+                </TableContainer>
+              )}
             </Box>
           </VStack>
         </Box>

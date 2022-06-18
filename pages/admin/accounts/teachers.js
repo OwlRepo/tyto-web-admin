@@ -7,6 +7,7 @@ import {
   SearchIcon,
   AddIcon,
   DownloadIcon,
+  ViewIcon,
 } from "@chakra-ui/icons";
 import {
   Box,
@@ -77,6 +78,7 @@ import firestore_db from "../../../constant/configurations/firebase_init";
 import Papa from "papaparse";
 import emailjs from "@emailjs/browser";
 import { CSVLink, CSVDownload } from "react-csv";
+import SubjectsModal from "../../../constant/components/modals/accounts/teacher/teacher_subjects";
 export default function Teachers() {
   const [isEditingAccountInfo, setIsEditingAccountInfo] = useState(false);
   const [scheduleID, setScheduleID] = useState(undefined);
@@ -86,6 +88,7 @@ export default function Teachers() {
   const [hidePassword, setHidePassword] = useState(true);
   const [accountEmail, setAccountEmail] = useState("");
   const [teachers, setTeachers] = useState([]);
+  const [schedule, setSchedule] = useState([]);
 
   const toast = useToast();
   const [searchedEmail, setSearchedEmail] = useState("");
@@ -101,6 +104,11 @@ export default function Teachers() {
     isOpen: isOpenAddAccounts,
     onOpen: onOpenAddAccounts,
     onClose: onCloseAddAccounts,
+  } = useDisclosure();
+  const {
+    isOpen: isOpenTeacherSubjects,
+    onOpen: onOpenTeacherSubjects,
+    onClose: onCloseTeacherSubjects,
   } = useDisclosure();
 
   useEffect(() => {
@@ -315,6 +323,11 @@ export default function Teachers() {
         isOpen={isOpen}
         onClose={onClose}
         scheduleIDS={scheduleIDS}
+      />
+      <SubjectsModal
+        isOpen={isOpenTeacherSubjects}
+        onClose={onCloseTeacherSubjects}
+        schedule={schedule}
       />
       <Modal
         isOpen={isOpenAddAccounts}
@@ -574,6 +587,19 @@ export default function Teachers() {
                                                 fullname: data.fullname,
                                                 password: data.password,
                                               });
+                                            }}
+                                          />
+                                        </Tooltip>
+                                        <Tooltip label={"Edit"}>
+                                          <IconButton
+                                            colorScheme={"facebook"}
+                                            icon={<ViewIcon />}
+                                            onClick={async () => {
+                                              setScheduleID(
+                                                await getScheduleIDs()
+                                              );
+                                              setSchedule(data);
+                                              onOpenTeacherSubjects();
                                             }}
                                           />
                                         </Tooltip>

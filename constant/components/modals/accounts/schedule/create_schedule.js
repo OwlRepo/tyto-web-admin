@@ -29,7 +29,7 @@ import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import createTeacherSchedule from "../../../../services/accounts/teacher_schedule/create_schedule";
 import moment from "moment";
-import { CSVLink, CSVDownload } from "react-csv";
+
 const CreateScheduleModal = ({
   isOpen,
   onClose,
@@ -117,7 +117,7 @@ const CreateScheduleModal = ({
         onClose();
         setEmail("");
         setRoomID("");
-        setRoomID("");
+        setSelectedSection("");
         setFullname("");
         setScheduleID("");
         setClassTime("");

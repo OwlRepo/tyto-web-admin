@@ -7,6 +7,7 @@ import {
   SearchIcon,
   AddIcon,
   DownloadIcon,
+  ViewIcon,
 } from "@chakra-ui/icons";
 import {
   Box,
@@ -64,6 +65,7 @@ import { NextSeo } from "next-seo";
 import Papa from "papaparse";
 import getScheduleIDs from "../../../constant/services/schedules/get_schedule_ids";
 import updateAccountInformation from "../../../constant/services/accounts/student/update_information";
+import SubjectsModal from "../../../constant/components/modals/accounts/student/student_subjects";
 import {
   doc,
   getDoc,
@@ -88,6 +90,7 @@ export default function Students() {
   const [hidePassword, setHidePassword] = useState(true);
   const [accountEmail, setAccountEmail] = useState("");
   const [students, setStudents] = useState([]);
+  const [subjects, setSubjects] = useState([]);
 
   const toast = useToast();
   const [searchedEmail, setSearchedEmail] = useState("");
@@ -103,6 +106,12 @@ export default function Students() {
     isOpen: isOpenAddAccounts,
     onOpen: onOpenAddAccounts,
     onClose: onCloseAddAccounts,
+  } = useDisclosure();
+
+  const {
+    isOpen: isOpenStudentSubjects,
+    onOpen: onOpenStudentSubjects,
+    onClose: onCloseStudentSubjects,
   } = useDisclosure();
 
   useEffect(() => {
@@ -335,6 +344,11 @@ export default function Students() {
         isOpen={isOpen}
         onClose={onClose}
         scheduleIDS={scheduleIDS}
+      />
+      <SubjectsModal
+        isOpen={isOpenStudentSubjects}
+        onClose={onCloseStudentSubjects}
+        subjects={subjects}
       />
       <Modal
         isOpen={isOpenAddAccounts}
@@ -625,6 +639,19 @@ export default function Students() {
                                                 fullname: data.fullname,
                                                 password: data.password,
                                               });
+                                            }}
+                                          />
+                                        </Tooltip>
+                                        <Tooltip label={"Edit"}>
+                                          <IconButton
+                                            colorScheme={"facebook"}
+                                            icon={<ViewIcon />}
+                                            onClick={async () => {
+                                              setScheduleID(
+                                                await getScheduleIDs()
+                                              );
+                                              setSubjects(data);
+                                              onOpenStudentSubjects();
                                             }}
                                           />
                                         </Tooltip>
